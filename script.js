@@ -12,6 +12,9 @@ class WidgetBase extends HTMLElement {
                     color: blue;
                 }
 
+                #fetch-data-button{
+                }
+
                 .container {
                     width: 800px;
                     height: 500px;
@@ -21,6 +24,10 @@ class WidgetBase extends HTMLElement {
                     border-radius: 12px;
                     border: 2px solid #88c0f7;
                     z-index: 10;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
 
                 .raft{
@@ -126,11 +133,8 @@ class WidgetBase extends HTMLElement {
             </style>
 
             <div>
-                <div class="header">
-                    <h1>Hello</h1>
-                    <button id="fetch-data-button">Fetch Data</button>
-                </div>
                 <div class="container">
+                    <button id="fetch-data-button">Fetch Data</button>
                     <img class="raft" src="raft.png" alt="Raft graphic" />
                     <div id="water-level"></div>
                     <img class="wave" src="wave.svg" alt="Wave graphic" />
@@ -156,8 +160,8 @@ class WidgetBase extends HTMLElement {
         const mostRecent = data.value.timeSeries[0].values[0].value[dataLength - 1].value;
 
         //calculating the water level
-        //const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
-        const percentToCapacity = 76;
+        const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
+        //const percentToCapacity = 76;
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
