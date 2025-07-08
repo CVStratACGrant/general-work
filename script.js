@@ -137,9 +137,9 @@ export class WidgetBase extends HTMLElement {
             <div>
                 <div class="container">
                     <button id="fetch-data-button">Fetch Data</button>
-                    <img class="raft" src="raft.png" alt="Raft graphic" />
+                    <img class="raft" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/raft.png" />
                     <div id="water-level"></div>
-                    <img class="wave" src="wave.svg" alt="Wave graphic" />
+                    <img class="wave" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/wave.svg" />
 
                     <div class="raft-label">
                         <div id="percent-label"></div>
