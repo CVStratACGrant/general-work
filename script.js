@@ -4,7 +4,7 @@ import { widgetBaseStyling, waterLevelCode, slotCode } from "./script2.js";
 class WidgetBase extends HTMLElement {
     constructor() {
         super();
-
+        
         this.widgetBaseStyling = widgetBaseStyling;
         this.waterLevelCode = waterLevelCode;
         this.slotCode = slotCode;
@@ -19,6 +19,8 @@ class WidgetBase extends HTMLElement {
     }
 
     connectedCallback() {
+        this.shadowRoot.getElementById('raft-img').src = this.getAttribute('raftImageSRC');
+        this.shadowRoot.getElementById('wave-img').src = this.getAttribute('waveImageSRC');
         this.shadowRoot.getElementById('fetch-data-button').addEventListener('click', () => this.fetchWaterLevel());
         this.shadowRoot.querySelector('slot[name="earthquake-widget"]').addEventListener('slotchange', (event) => this.analyzeSlot(event));
         this.shadowRoot.querySelector('slot[name="water-widget"]').addEventListener('slotchange', (event) => this.analyzeSlot(event));
