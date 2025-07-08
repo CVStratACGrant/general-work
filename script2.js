@@ -19,9 +19,9 @@ export const waterLevelCode = html`
     <div>
         <div class="container">
             <button id="fetch-data-button">Fetch Data</button>
-            <img class="raft" src="raft.png" />
+            <img class="raft" src="./raft.png" />
             <div id="water-level"></div>
-            <img class="wave" src="wave.svg" />
+            <img class="wave" src="./wave.svg" />
 
             <div class="raft-label">
                 <div id="percent-label"></div>
