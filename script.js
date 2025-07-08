@@ -167,8 +167,12 @@ class WidgetBase extends HTMLElement {
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
-        this.waveAnimation(percentToCapacity);
-        this.labelDisplay(percentToCapacity, rafting);
+        // // TESTING SECTION
+        // this.waveAnimation(90);
+        // this.labelDisplay(20, true);
+
+        // this.waveAnimation(percentToCapacity);
+        // this.labelDisplay(percentToCapacity, rafting);
         this.predict(data);
     }
 
