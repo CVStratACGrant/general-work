@@ -1,158 +1,54 @@
-//script.js
+import { widgetBaseStyling, waterLevelCode, slotCode } from "./script2.js";
 
-//https://waterservices.usgs.gov/nwis/iv/?sites=11109700&agencyCd=USGS&parameterCd=00054&period=P7D&siteStatus=all&format=json
 
 class WidgetBase extends HTMLElement {
     constructor() {
         super();
+        
+        this.widgetBaseStyling = widgetBaseStyling;
+        this.waterLevelCode = waterLevelCode;
+        this.slotCode = slotCode;
 
         this.attachShadow({ mode: 'open' });
 
         this.shadowRoot.innerHTML = `
-            <style>
-                h1 {
-                    color: blue;
-                }
-
-                #fetch-data-button{
-                }
-
-                .container {
-                    width: 800px;
-                    height: 500px;
-                    background-color: #ebfffd;
-                    position: relative;
-                    overflow: hidden; /* hide wave overflow */
-                    border-radius: 12px;
-                    border: 2px solid #88c0f7;
-                    z-index: 10;
-
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .raft{
-                    opacity: 0%;
-                    transition: bottom 1.5s ease, opacity 1.5s ease;
-                }
-                .raft.visible{  
-                    opacity: 100%;
-                }
-
-                #water-level {
-                    position: absolute;
-                    bottom: 0;
-                    width: 100%;
-                    height: 0%;
-                    background: linear-gradient(
-                        to top,
-                        #0a3761,
-                        #0f4e8a
-                    );
-                    border-radius: 0 0 12px 12px;
-                    transition: height 1.5s ease;
-                    z-index: 1;
-                }
-
-                .wave {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 200%;
-                    height: 80px;
-                    z-index: 2;
-                    opacity: 0;
-                    filter: blur(0.8px);
-                    pointer-events: none;
-                    animation: waveMove 6s linear infinite alternate;
-                    transform: translateY(20px);
-                    transition: transform 1.2s ease, bottom 1.5s ease;
-                }   
-
-                .visible {
-                    opacity: 100%;
-                    transform: translateY(0); /* move up */
-                }
-
-                .raft {
-                    position: absolute;
-                    left: 50%; /* center horizontally */
-                    bottom: 0;
-                    opacity: 0;
-                    transform: translateX(-50%);
-                    z-index: 3;
-                    animation: raftMoveAndRock 6s linear infinite alternate;
-                    width: 50%;
-                }
-
-                @keyframes raftMoveAndRock {
-                    0% {
-                        transform: translateX(-50%) rotate(-5deg);
-                    }
-                    50% {
-                        transform: translateX(-50%) rotate(5deg);
-                    }
-                    100% {
-                        transform: translateX(-50%) rotate(-5deg);
-                    }
-                }
-
-                @keyframes waveMove {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-
-                .raft-label {
-                    position: absolute;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    bottom: 0;
-                    color: white;
-                    text-align: center;
-                    font-weight: bold;
-                    font-family: sans-serif;
-                    opacity: 0;
-                    transition: opacity 1.5s ease;
-                    z-index: 4;
-                    pointer-events: none;
-                    font-size: 1.5rem;
-                }
-
-                .raft-label.visible {
-                    opacity: 1;
-                }
-
-                #prediction-label {
-                    font-weight: normal;
-                    font-size: 0.9rem;
-                    margin-top: 1rem;
-                }
-            </style>
-
-            <div>
-                <div class="container">
-                    <button id="fetch-data-button">Fetch Data</button>
-                    <img class="raft" src="https://cvstratstaging.wpengine.com/wp-content/uploads/2025/07/raft.png" />
-                    <div id="water-level"></div>
-                    <img class="wave" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/wave.svg" />
-
-                    <div class="raft-label">
-                        <div id="percent-label"></div>
-                        <div id="prediction-label"></div>
-                    </div>
-                </div>
-            </div>
+            ${this.widgetBaseStyling}
+            ${this.slotCode}
+            ${this.waterLevelCode}
         `;
     }
 
     connectedCallback() {
-        this.shadowRoot.getElementById('fetch-data-button')
-            .addEventListener('click', () => this.fetchWaterLevel());
+        this.shadowRoot.getElementById('raft-img').src = this.getAttribute('raftImageSRC');
+        this.shadowRoot.getElementById('wave-img').src = this.getAttribute('waveImageSRC');
+        this.shadowRoot.getElementById('fetch-data-button').addEventListener('click', () => this.fetchWaterLevel());
+        this.shadowRoot.querySelector('slot[name="earthquake-widget"]').addEventListener('slotchange', (event) => this.analyzeSlot(event));
+        this.shadowRoot.querySelector('slot[name="water-widget"]').addEventListener('slotchange', (event) => this.analyzeSlot(event));
+    }
+
+    analyzeSlot(event) {
+        const slot = event.target;
+        const assignedElements = slot.assignedElements();
+        
+        for (const element of assignedElements) {
+            this.observeAttributes(element);
+        }
+    }
+
+    observeAttributes(element) {
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type !== 'attributes') continue;
+                const name = mutation.attributeName;
+                const oldValue = mutation.oldValue;
+                const newValue = mutation.target.getAttribute(name);
+
+                console.log(`Attribute changed: ${name}`);
+                console.log(`Old Value: ${oldValue}, New Value ${newValue}`);
+            }
+        })
+
+        observer.observe(element, { attributes: true, attributeOldValue: true })
     }
 
     async fetchWaterLevel() {
@@ -162,19 +58,16 @@ class WidgetBase extends HTMLElement {
         const mostRecent = data.value.timeSeries[0].values[0].value[dataLength - 1].value;
 
         //calculating the water level
-        //const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
-        const percentToCapacity = 40;
+        const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
-        // // TESTING SECTION
-        // this.waveAnimation(90);
-        // this.labelDisplay(20, true);
+        // TESTING
+        this.waveAnimation(85);
+        this.labelDisplay(85, true);
 
-        console.log(percentToCapacity)
-
-        this.waveAnimation(percentToCapacity);
-        this.labelDisplay(percentToCapacity, rafting);
+        // this.waveAnimation(percentToCapacity);
+        // this.labelDisplay(percentToCapacity, rafting);
         this.predict(data);
     }
 
@@ -263,5 +156,15 @@ class WidgetBase extends HTMLElement {
     }
 }
 
-customElements.define('widget-base', WidgetBase);
+// class WidgetNested1 extends WidgetBase {
+//     constructor() {
+//         super();
 
+//         this.attachShadow({ mode: 'true' });
+//         this.innerHTML = `
+
+//         `;
+//     }
+// }
+
+customElements.define('widget-base', WidgetBase);
