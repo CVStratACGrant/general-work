@@ -137,7 +137,7 @@ class WidgetBase extends HTMLElement {
             <div>
                 <div class="container">
                     <button id="fetch-data-button">Fetch Data</button>
-                    <img class="raft" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/raft.png" />
+                    <img class="raft" src="https://cvstratstaging.wpengine.com/wp-content/uploads/2025/07/raft.png" />
                     <div id="water-level"></div>
                     <img class="wave" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/wave.svg" />
 
@@ -162,8 +162,8 @@ class WidgetBase extends HTMLElement {
         const mostRecent = data.value.timeSeries[0].values[0].value[dataLength - 1].value;
 
         //calculating the water level
-        const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
-        //const percentToCapacity = 76;
+        //const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
+        const percentToCapacity = 76;
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
