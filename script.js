@@ -163,7 +163,7 @@ class WidgetBase extends HTMLElement {
 
         //calculating the water level
         //const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
-        const percentToCapacity = 76;
+        const percentToCapacity = 40;
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
@@ -171,8 +171,10 @@ class WidgetBase extends HTMLElement {
         // this.waveAnimation(90);
         // this.labelDisplay(20, true);
 
-        // this.waveAnimation(percentToCapacity);
-        // this.labelDisplay(percentToCapacity, rafting);
+        console.log(percentToCapacity)
+
+        this.waveAnimation(percentToCapacity);
+        this.labelDisplay(percentToCapacity, rafting);
         this.predict(data);
     }
 
