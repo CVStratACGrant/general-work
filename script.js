@@ -1,6 +1,8 @@
+//script.js
+
 //https://waterservices.usgs.gov/nwis/iv/?sites=11109700&agencyCd=USGS&parameterCd=00054&period=P7D&siteStatus=all&format=json
 
-class WidgetBase extends HTMLElement {
+export class WidgetBase extends HTMLElement {
     constructor() {
         super();
 
