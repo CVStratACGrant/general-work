@@ -56,19 +56,16 @@ class WidgetBase extends HTMLElement {
         const mostRecent = data.value.timeSeries[0].values[0].value[dataLength - 1].value;
 
         //calculating the water level
-        //const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
-        const percentToCapacity = 40;
+        const percentToCapacity = (1 - (mostRecent / 83240)) * 100;
 
         const { rafting, message } = this.getWhitewaterRaftingStatus(percentToCapacity);
 
-        // // TESTING SECTION
-        // this.waveAnimation(90);
-        // this.labelDisplay(20, true);
+        // TESTING
+        this.waveAnimation(85);
+        this.labelDisplay(85, true);
 
-        console.log(percentToCapacity)
-
-        this.waveAnimation(percentToCapacity);
-        this.labelDisplay(percentToCapacity, rafting);
+        // this.waveAnimation(percentToCapacity);
+        // this.labelDisplay(percentToCapacity, rafting);
         this.predict(data);
     }
 

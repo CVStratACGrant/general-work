@@ -1,17 +1,27 @@
-export const slotCode = `
+const html = (strings, ...values) => {
+  // Simple tagged template literal handler
+  return strings.reduce((acc, str, i) => acc + str + (values[i] || ''), '');
+};
+
+const css = (strings, ...values) => {
+  // Simple tagged template literal handler
+  return strings.reduce((acc, str, i) => acc + str + (values[i] || ''), '');
+};
+
+export const slotCode = html`
     <div>
         <span><slot name="earthquake-widget"></slot></span>
         <span><slot name="water-widget"></slot></span>
     </div>
 `;
 
-export const waterLevelCode = `
+export const waterLevelCode = html`
     <div>
         <div class="container">
             <button id="fetch-data-button">Fetch Data</button>
-            <img class="raft" src="https://cvstratstaging.wpengine.com/wp-content/uploads/2025/07/raft.png" />
+            <img class="raft" src="raft.png" />
             <div id="water-level"></div>
-            <img class="wave" src="https://cdn.jsdelivr.net/gh/CVStratACGrant/general-work@main/wave.svg" />
+            <img class="wave" src="wave.svg" />
 
             <div class="raft-label">
                 <div id="percent-label"></div>
@@ -21,7 +31,7 @@ export const waterLevelCode = `
     </div>
 `;
 
-export const widgetBaseStyling = `
+export const widgetBaseStyling = css`
     <style>
         h1 {
             color: blue;
